@@ -6,6 +6,7 @@ import os
 import pygame
 import pandas as pd
 
+BLACK = (0, 0, 0)
 LANE_POINT = 'c'
 WALL_POINT = '#'
 START_POINT = 'S'
@@ -22,27 +23,11 @@ class Point():
         self.y = y
         self.position = (x, y)
         self.type_of_point = type_of_point
-            
+        
     def __repr__(self):
         return str(self.position)
-    
-    def move_up(self):
-        if self.type == 'Hero':
-            return Point(self.x-1, self.y)
-    
-    def move_down(self):
-        if self.type == 'Hero':
-            return Point(self.x+1, self.y)
-    
-    def move_left(self):
-        if self.type == 'Hero':
-            return Point(self.x, self.y-1)
-    
-    def move_right(self):
-        if self.type == 'Hero':
-            return Point(self.x, self.y+1)
+            
 
-   
 class GameMap():
     '''
     Classe gérant le labyrinthe
@@ -74,8 +59,6 @@ class GameMap():
         #         i = i + 1
         #         print('La position de {} est ({}, {})'.format(char, x, y))
       
-
-            #point = 
         # with open(path_to_file, 'r') as laby:
         #     for x, line in enumerate(laby):
         #         for y, col in enumerate(line):
@@ -93,26 +76,36 @@ class GameMap():
         return map_dataframe
                  
                           
-class Hero():
+class Hero(pygame.sprite.Sprite):
     '''
     Classe gérant le héro du jeu
     '''
         
     def __init__(self):
+        super().__init__()
         self.name = 'MacGyver'
-        self.position = ()
+        self.size = (32, 43)
+        self.position = (1, 1)
+        self.image = pygame.image.load("img/macgyver.png").convert()
+        self.rect = self.image.get_rect()
         
-    def move_hero_up(self):
+    def __repr__(self):
+        return str(self.position)
+        
+    def update(self):
         pass
     
-    def move_hero_down(self):
-        pass
+    def move_up(self):
+        return self.rect.move_ip(0, -15)
     
-    def move_hero_left(self):
-        pass
-
-    def move_hero_right(self):
-        pass      
+    def move_down(self):
+        return self.rect.move_ip(0, 15)
+    
+    def move_left(self):
+        return self.rect.move_ip(-15, 0)
+    
+    def move_right(self):
+        return self.rect.move_ip(15, 0) 
     
     
 def draw_screen():
@@ -120,9 +113,6 @@ def draw_screen():
     pygame.display.init()
     screen_size = (750, 750)
     screen = pygame.display.set_mode(screen_size)
-    size = width, height = 32, 43
-    speed = [2, 2]
-    black = 0, 0, 0
     clock = pygame.time.Clock()
     FPS = 60  # Frames per second.
     pygame.display.set_caption("Aidez MacGyver à s'échapper du labyrinthe !")
@@ -135,45 +125,30 @@ def draw_screen():
     laby_item3 = pygame.image.load("img/ether.png").convert()
     laby_item_complete = pygame.image.load("img/seringue.png").convert()
     
-    mcgyver = pygame.image.load("img/macgyver.png").convert() # Charger l'image de MacGyver à partir d'un fichier
-    mcgyverrect = mcgyver.get_rect()
+    mg = Hero()
+    running = True
     
-    while 1:
-        laby_map = GameMap()
-        laby_map_data = laby_map.load_map_data('map.csv')
-        # for point in laby_map_data.lane:
-        #     screen.blit(laby_wall, point.position)
-        
+    while running:
         for event in pygame.event.get():
             if event == pygame.QUIT:
-                raise SystemExit
+                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     raise SystemExit
+                if event.key == pygame.K_LEFT:
+                    mg.move_left()
                 elif event.key == pygame.K_UP:
-                    mcgyverrect = mcgyverrect.move(speed)
-                    if mcgyverrect.left < 0 or mcgyverrect.right > width:
-                        speed[0] = -speed[0]
-                    if mcgyverrect.top < 0 or mcgyverrect.bottom > height:
-                        speed[1] = -speed[1]
-                    print("Player moved up!")
-                elif event.key == pygame.K_LEFT:
-                    print("Player moved left!")
-                elif event.key == pygame.K_DOWN:
-                    mcgyverrect = mcgyverrect.move(speed)
-                    if mcgyverrect.left < 0 or mcgyverrect.right > width:
-                        speed[0] = -speed[0]
-                    if mcgyverrect.top < 0 or mcgyverrect.bottom > height:
-                        speed[1] = -speed[1]
-                    print("Player moved down!")
+                    mg.move_up()
                 elif event.key == pygame.K_RIGHT:
-                    print("Player moved right!")
-        #screen.blit(mcgyver, (50,100)) # Ajouter l'image de MacGyver sur l'écran
-        screen.fill(black)
-        screen.blit(mcgyver, mcgyverrect)
+                    mg.move_right()
+                elif event.key == pygame.K_DOWN:
+                    mg.move_down()
+                    
+        screen.fill(BLACK)
+        screen.blit(mg.image, mg.rect)
         pygame.display.flip() # Actualisation pour afficher l'image
 
-
-# Garder la fenêtre de jeu ouverte
 if __name__ == "__main__":
     draw_screen()
