@@ -2,6 +2,7 @@
 
 import sys
 import os
+import csv
 
 import pygame
 import pandas as pd
@@ -44,36 +45,25 @@ class GameMap():
     def load_map_data(self, map_file):
         directory = os.path.dirname(__file__) # On prend le bon chemin
         path_to_file = os.path.join(directory, "map", map_file) # On va dans le dossier "map" et on récupère le fichier.
-        dataframe_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-        map_dataframe = pd.read_csv(path_to_file, sep=",")
-        
-        # for row in map_dataframe.iterrows():
-        #     x = row[0]
-        #     char = row[1]
-        # i = 0
-        # while i < 15:
-        #     for row in map_dataframe.iterrows():
-        #         x = row[0]
-        #         y = i
-        #         char = row[1][1]
-        #         i = i + 1
-        #         print('La position de {} est ({}, {})'.format(char, x, y))
-      
-        # with open(path_to_file, 'r') as laby:
-        #     for x, line in enumerate(laby):
-        #         for y, col in enumerate(line):
-        #             if col == LANE_POINT:
-        #                 self.lane.add(Point(x, y, 'Lane'))
-        #             elif col == WALL_POINT:
-        #                 self.wall.add(Point(x, y, 'Wall'))
-        #             elif col == START_POINT:
-        #                 self.start.add(Point(x, y, 'Lane'))
-        #             elif col == EXIT_POINT:
-        #                 self.exit.add(Point(x, y, 'Lane'))
-        #             else:
-        #                 pass
-        
-        return map_dataframe
+       
+        with open(path_to_file, newline='') as labycsv:
+            reader = csv.reader(labycsv)
+            y = 0
+            for row in reader:
+                x = 0
+                while x < 15:
+                    if row[x] == LANE_POINT:
+                        self.lane.add(Point(x, y, 'Lane'))
+                    elif row[x] == WALL_POINT:
+                        self.wall.add(Point(x, y, 'Wall'))
+                    elif row[x] == START_POINT:
+                        self.start.add(Point(x, y, 'Lane'))
+                    elif row[x] == EXIT_POINT:
+                        self.exit.add(Point(x, y, 'Lane'))
+                    else:
+                        pass
+                    x += 1
+                y += 1
                  
                           
 class Hero(pygame.sprite.Sprite):
@@ -126,6 +116,8 @@ def draw_screen():
     laby_item_complete = pygame.image.load("img/seringue.png").convert()
     
     mg = Hero()
+    labyrinthe = GameMap()
+    labyrinthe.load_map_data('map.csv')
     running = True
     
     while running:
@@ -145,6 +137,8 @@ def draw_screen():
                     mg.move_right()
                 elif event.key == pygame.K_DOWN:
                     mg.move_down()
+    
+        print(labyrinthe.lane)
                     
         screen.fill(BLACK)
         screen.blit(mg.image, mg.rect)

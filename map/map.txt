@@ -1,13 +1,13 @@
 #############E#
-#ccccccccY#ccc#
+#ccccccccc#ccc#
 ###c#c#####c###
 #ccc#c#ccc#c#c#
 #c###c#c###c#c#
 #c#ccccc#ccccc#
 #c#c#######c#c#
-#c#ccccccc#Z#c#
+#c#ccccccc#c#c#
 #c###c###c###c#
-#ccc#c#X#ccccc#
+#ccc#c#c#ccccc#
 ###c###c#######
 #c#ccc#c#ccccc#
 #c###c#c#c###c#
