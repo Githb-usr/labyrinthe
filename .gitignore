@@ -1,4 +1,5 @@
 _archives/
+.vscode/
 env/
 img/_archives/
 aide.txt
