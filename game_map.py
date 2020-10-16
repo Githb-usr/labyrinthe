@@ -57,8 +57,10 @@ class GameMap:
                         self.wall.append((x, y, 'WALL'))
                     elif row[x] == START_CELL:
                         self.start.append((x, y, 'LANE'))
+                        self.lane.append((x, y, 'LANE'))
                     elif row[x] == EXIT_CELL:
                         self.exit.append((x, y, 'LANE'))
+                        self.lane.append((x, y, 'LANE'))
                     else:
                         pass
                     x += 1

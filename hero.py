@@ -2,34 +2,45 @@
 
 import pygame
 
+from cell import Cell
 from configs import CELL_SIZE
 
 
-class Hero:
+class Hero(Cell):
     '''
     Classe gérant le héros du jeu
     '''
         
-    def __init__(self):
-        super().__init__()
+    def __init__(self, x, y, image, type_of_cell='LANE'):
+        Cell.__init__(self, x, y, image, type_of_cell)
         self.name = 'MacGyver'
-        self.image = pygame.image.load("img/macgyver.png").convert_alpha()
-        self.pos = self.image.get_rect().move(50, 50)
-          
-    def __repr__(self):
-        return str(self.position)
-        
-    def update(self):
-        pass
-    
+        # self.image = pygame.image.load("img/", image).convert_alpha()
+        # self.position = self.image.get_rect().move(start_position)
+            
     def move_up(self):
-        return self.pos.move_ip(0, -CELL_SIZE)
+        if self.position[1] > 0:
+            new_rect = self.rect.move_ip(0, -CELL_SIZE)
+            self.position = (self.position[0], self.position[1] - CELL_SIZE)
+        
+            return new_rect
     
     def move_down(self):
-        return self.pos.move_ip(0, CELL_SIZE)
+        if self.position[1] < 700:
+            new_rect = self.rect.move_ip(0, CELL_SIZE)
+            self.position = (self.position[0], self.position[1] + CELL_SIZE)
+            
+            return new_rect
     
     def move_left(self):
-        return self.pos.move_ip(-CELL_SIZE, 0)
+        if self.position[0] > 0:
+            new_rect = self.rect.move_ip(-CELL_SIZE, 0)
+            self.position = (self.position[0] - CELL_SIZE, self.position[1])
+        
+            return new_rect
     
     def move_right(self):
-        return self.pos.move_ip(CELL_SIZE, 0)
+        if self.position[0] < 700:
+            new_rect = self.rect.move_ip(CELL_SIZE, 0)
+            self.position = (self.position[0] + CELL_SIZE, self.position[1])
+            
+            return new_rect

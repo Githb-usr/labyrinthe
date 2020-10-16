@@ -22,17 +22,22 @@ class Game:
         clock = pygame.time.Clock()
         FPS = 60  # Frames per second.
         pygame.display.set_caption("Aidez MacGyver à s'échapper du labyrinthe !")
-        
-        mg = Hero()
+                    
         labyrinthe = GameMap()
         labyrinthe.load_map_data('map.csv')
+        for s in labyrinthe.start:
+            mg = Hero(s[0], s[1], 'macgyver.png')
+            print(mg.rect[0])
+        for e in labyrinthe.exit:
+            guard_pos = (e[0]*50, e[1]*50)
         running = True
         
         while running:
             for event in pygame.event.get():
                 for w in labyrinthe.wall:
-                    print(w[0])
-                    screen.blit(labyrinthe.wall_img, labyrinthe.wall_pos.move(w[0], w[1]))
+                    screen.blit(labyrinthe.wall_img, labyrinthe.wall_pos.move((w[0]*50, w[1]*50)))
+                for l in labyrinthe.lane:
+                    screen.blit(labyrinthe.lane_img, labyrinthe.lane_pos.move((l[0]*50, l[1]*50)))
                 if event == pygame.QUIT:
                     running = False
                     pygame.quit()
@@ -42,18 +47,13 @@ class Game:
                         raise SystemExit
                     if event.key == pygame.K_LEFT:
                         mg.move_left()
-                        screen.blit(mg.image, mg.pos, mg.pos)
-                    elif event.key == pygame.K_UP:
+                    elif event.key == pygame.K_UP:           
                         mg.move_up()
-                        screen.blit(mg.image, mg.pos, mg.pos)
                     elif event.key == pygame.K_RIGHT:
                         mg.move_right()
-                        screen.blit(mg.image, mg.pos, mg.pos)
                     elif event.key == pygame.K_DOWN:
                         mg.move_down()
-                        screen.blit(mg.image, mg.pos, mg.pos)
-            # print(labyrinthe.wall)
-            # screen.fill(BLACK)
-            
-            screen.blit(mg.image, mg.pos)
+                        
+            screen.blit(mg.cell_img, mg.rect)
+            screen.blit(labyrinthe.guard_img, guard_pos)
             pygame.display.flip() # Actualisation pour afficher l'image
