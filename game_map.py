@@ -46,10 +46,8 @@ class GameMap:
                         self.lane.append((x, y, LANE_CELL))
                     elif row[x] == START_CELL:
                         self.start.append((x, y, LANE_CELL))
-                        # self.lane.append((x, y, LANE_CELL))
                     elif row[x] == EXIT_CELL:
                         self.exit.append((x, y, LANE_CELL))
-                        # self.lane.append((x, y, LANE_CELL))
                     else:
                         pass
                     x += 1
@@ -60,7 +58,6 @@ class GameMap:
         On génère des positions élatoires pour les 3 items que doit récupérer le héros
         """
         items_positions = random.sample(self.lane, k=3)
-        # print(items_positions)
         for it in items_positions:
             self.items_list.append(it)
 
