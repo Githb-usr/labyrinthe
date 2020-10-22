@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from configs import CELL_SIZE, SCREEN_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL 
-from game_map import GameMap
+from map import Map
 from hero import Hero
 from cell import Cell
 
@@ -23,7 +23,7 @@ def display_img(img):
     Affichage de chaque image du jeu
     '''
     directory = os.path.dirname(__file__) # On prend le bon chemin
-    path_to_file = os.path.join(directory, "img", img) # On va dans le dossier "map" et on récupère le fichier.
+    path_to_file = os.path.join(directory, "img", img) # On va dans le dossier "maps" et on récupère le fichier image.
     cell_img = pyg.image.load(path_to_file).convert_alpha()
     
     return cell_img
@@ -36,30 +36,45 @@ def display_rect(cell_img):
     
     return cell_img_rect
 
-def display_map(map, map_df):
+def display_map(map):
     '''
     Affichage du fond du jeu
     ''' 
     wall_img = display_img('wall.png')
-    lane_img = display_img('lane.png')
-    guard_img = display_img('guard.png')
+    for wa in map.wall:
+        wall_rect = display_rect(wall_img, wa.position[0], wa.position[1])
+        screen.blit(wall_img, wall_rect)
     
-    for i in range(len(map_df)):
-        j = 0
-        while j < 15:
-            if map_df.iloc[j][i] == 'W':
-                Cell(i, j)
-                wall_rect = display_rect(wall_img).move(i*CELL_SIZE, j*CELL_SIZE)
-                screen.blit(wall_img, wall_rect)
-                j += 1
-            elif map_df.iloc[j][i] == 'L' or map_df.iloc[j][i] == 'S':
-                lane_rect = display_rect(lane_img).move(i*CELL_SIZE, j*CELL_SIZE)
-                screen.blit(lane_img, lane_rect)
-                j += 1
-            elif map_df.iloc[j][i] == 'E':
-                guard_rect = display_rect(guard_img).move(i*CELL_SIZE, j*CELL_SIZE)
-                screen.blit(guard_img, guard_rect)
-                j += 1
+    lane_img = display_img('lane.png')
+    for la in map.lane:
+        lane_rect = display_rect(lane_img, la.position[0], la.position[1])
+        screen.blit(lane_img, lane_rect)
+    
+    guard_img = display_img('guard.png')
+    for ex in map.exit:
+        guard_rect = display_rect(guard_img, ex.position[0], ex.position[1])
+        screen.blit(guard_img, guard_rect)
+    
+    pyg.display.flip()
+    
+    # for i in range(len(map_df)):
+    #     j = 0
+    #     while j < 15:
+    #         if map_df.iloc[j][i] == 'W':
+    #             # Cell(i, j, 'WALL')
+    #             wall_rect = display_rect(wall_img).move(i*CELL_SIZE, j*CELL_SIZE)
+    #             screen.blit(wall_img, wall_rect)
+    #             j += 1
+    #         elif map_df.iloc[j][i] == 'L' or map_df.iloc[j][i] == 'S':
+    #             # Cell(i, j, 'LANE')
+    #             lane_rect = display_rect(lane_img).move(i*CELL_SIZE, j*CELL_SIZE)
+    #             screen.blit(lane_img, lane_rect)
+    #             j += 1
+    #         elif map_df.iloc[j][i] == 'E':
+    #             # Cell(i, j, 'GUARD')
+    #             guard_rect = display_rect(guard_img).move(i*CELL_SIZE, j*CELL_SIZE)
+    #             screen.blit(guard_img, guard_rect)
+    #             j += 1  
     
 def display_items(map):
     '''
@@ -82,18 +97,27 @@ def display_items(map):
             items_repr[i][1] = items_repr[i][1].move(it[0]*CELL_SIZE, it[1]*CELL_SIZE)
             screen.blit(items_repr[i][0], items_repr[i][1])
             i += 1
+            
+    return items_repr
 
 def display_hero(hero):
     '''
     Affichage du héros
     '''
     hero_img = display_img('hero.png')
-    hero_rect = display_rect(hero_img)
-    hero_view = hero_rect.move(hero.position[0], hero.position[1])
-    screen.blit(hero_img, hero_view)
+    hero_rect = display_rect(hero_img, hero.position[0], hero.position[1])
+    screen.blit(hero_img, hero_rect)
     pyg.display.flip()
     
     return hero_img, hero_rect
+
+def collect_item(hero, items):
+    '''
+    Rammassage des items par le héros
+    '''    
+    for it in items:
+        if hero.colliderect(it): # si le héro se place sur un item
+            pass
             
 def pyg_events(hero, gmap):
     '''

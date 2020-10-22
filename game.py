@@ -2,7 +2,8 @@
 
 import interface
 from hero import Hero
-from game_map import GameMap
+from map import Map
+from configs import HERO_CELL
 
 
 class Game:
@@ -10,19 +11,21 @@ class Game:
     Classe créant le jeu
     '''
     
-    def draw_laby(self):
+    def new_game(self):
         '''
         Mise en place des éléments du jeu
         '''
-        labyrinthe = GameMap()
+        labyrinthe = Map()
         labyrinthe.load_map_data('map.csv')
-        map_df = labyrinthe.create_dataframe()
-        labyrinthe.items_random_position()
-        hero = Hero(labyrinthe.start[0][0], labyrinthe.start[0][1])
+        print(labyrinthe.start)
+        # map_df = labyrinthe.create_dataframe()
+        # labyrinthe.items_random_position()
+        # mcgyver = Hero(labyrinthe.start[0].position[0], labyrinthe.start[0].position[1], HERO_CELL)
+        # print(mcgyver.position)
         
         running = True        
         while running:
-            interface.display_map(labyrinthe, map_df)
-            interface.display_items(labyrinthe)
-            interface.display_hero(hero)
-            interface.pyg_events(hero, labyrinthe)
+            interface.display_map(labyrinthe)
+            # interface.display_items(labyrinthe)
+            # interface.display_hero(mcgyver)
+            # interface.pyg_events(mcgyver, labyrinthe)

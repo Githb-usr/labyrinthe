@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from cell import Cell
-from game_map import GameMap as gmap
+from map import Map
 import interface
 from configs import CELL_SIZE, SCREEN_SIZE
 
@@ -11,8 +11,8 @@ class Hero(Cell):
     Classe gérant le héros du jeu
     '''
         
-    def __init__(self, x, y):
-        Cell.__init__(self, x, y)
+    def __init__(self, x, y, type_of_cell):
+        Cell.__init__(self, x, y, type_of_cell)
         self.name = 'MacGyver'
         self.repr = interface.display_hero(self)
             

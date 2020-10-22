@@ -7,11 +7,11 @@ import random
 import numpy as np
 import pandas as pd
 
-from configs import SCREEN_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL 
+from configs import SCREEN_SIZE, MAP_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_CELL
 from cell import Cell
 
 
-class GameMap:
+class Map:
     '''
     Classe gérant le labyrinthe
     '''
@@ -22,17 +22,19 @@ class GameMap:
         """
         self.name = 'Labyrinthe'
         self.matrix = [] # matrice avec tous les lettres représentant chaque cellule
+        self.wall = [] # Les cellules murs
         self.lane = [] # Les cellules couloirs sans Start et Exit
         self.start = [] # La cellule de départ, occupé initialement par le héro
         self.exit = [] # La cellule d'arrivée, occupé par le gardien
-        self.items_list = [] # Les cellules occupées par les 32 items à récupérer par le héros
+        self.items_list = [] # Les cellules aléatoires occupées par les 3 items à récupérer par le héros
         
     def load_map_data(self, map_file):
         """
         Récupération des données du labyrinthe
+        :map_file
         """
         directory = os.path.dirname(__file__) # On prend le bon chemin
-        path_to_file = os.path.join(directory, "map", map_file) # On va dans le dossier "map" et on récupère le fichier.
+        path_to_file = os.path.join(directory, "maps", map_file) # On va dans le dossier "map" et on récupère le fichier.
        
         with open(path_to_file, newline='') as labycsv:
             reader = csv.reader(labycsv)                
@@ -42,16 +44,20 @@ class GameMap:
                     
                 x = 0
                 while x < 15:
+                    if row[x] == WALL_CELL:
+                        self.wall.append(Cell(x, y, WALL_CELL))
                     if row[x] == LANE_CELL:
-                        self.lane.append((x, y, LANE_CELL))
+                        self.lane.append(Cell(x, y, LANE_CELL))
                     elif row[x] == START_CELL:
-                        self.start.append((x, y, LANE_CELL))
+                        self.start.append(Cell(x, y, LANE_CELL))
                     elif row[x] == EXIT_CELL:
-                        self.exit.append((x, y, LANE_CELL))
+                        self.exit.append(Cell(x, y, LANE_CELL))
                     else:
                         pass
                     x += 1
                 y += 1
+                
+        print(self.start)
 
     def items_random_position(self):
         """
@@ -59,6 +65,7 @@ class GameMap:
         """
         items_positions = random.sample(self.lane, k=3)
         for it in items_positions:
+            it.type_of_cell = ITEM_CELL
             self.items_list.append(it)
 
     def create_dataframe(self):
