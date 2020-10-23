@@ -19,22 +19,22 @@ class Cell:
     # total_count = 0
     
     def __init__(self, x, y, type_of_cell):
-        self._position = (x*CELL_SIZE, y*CELL_SIZE)
-        self._type_of_cell = type_of_cell
+        self.position = (x*CELL_SIZE, y*CELL_SIZE)
+        self.type_of_cell = type_of_cell
         
     def __repr__(self):
         return str(self.position)
     
-    def _get_position(self):
+    def get_position(self):
         return self.position
         
-    def _get_type(self):
+    def get_type(self):
         return self.type_of_cell
     
-    def _set_position(self, new_position):
+    def set_position(self, new_position):
         self.position = new_position
         
-    def _set_type(self, new_toc):
+    def set_type(self, new_toc):
         self.type_of_cell = new_toc
     
     def delete(self):
@@ -50,5 +50,5 @@ class Cell:
             return False
         
     # properties
-    position = property(_get_position, _set_position)
-    type_of_cell = property(_get_type, _set_type)
+    # position = property(_get_position, _set_position)
+    # type_of_cell = property(_get_type, _set_type)

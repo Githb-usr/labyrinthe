@@ -3,7 +3,7 @@
 from cell import Cell
 from map import Map
 import interface
-from configs import CELL_SIZE, SCREEN_SIZE
+from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE
 
 
 class Hero(Cell):

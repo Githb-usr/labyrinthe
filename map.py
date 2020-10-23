@@ -56,8 +56,6 @@ class Map:
                         pass
                     x += 1
                 y += 1
-                
-        print(self.start)
 
     def items_random_position(self):
         """

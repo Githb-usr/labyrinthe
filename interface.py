@@ -4,10 +4,8 @@ import os
 import sys
 
 import pygame as pyg
-import numpy as np
-import pandas as pd
 
-from configs import CELL_SIZE, SCREEN_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL 
+from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL 
 from map import Map
 from hero import Hero
 from cell import Cell
@@ -28,11 +26,11 @@ def display_img(img):
     
     return cell_img
 
-def display_rect(cell_img):
+def display_rect(cell_img, x, y):
     '''
     Création d'un objet rect
     '''  
-    cell_img_rect = cell_img.get_rect()
+    cell_img_rect = cell_img.get_rect(left=x, top=y)
     
     return cell_img_rect
 
@@ -56,26 +54,7 @@ def display_map(map):
         screen.blit(guard_img, guard_rect)
     
     pyg.display.flip()
-    
-    # for i in range(len(map_df)):
-    #     j = 0
-    #     while j < 15:
-    #         if map_df.iloc[j][i] == 'W':
-    #             # Cell(i, j, 'WALL')
-    #             wall_rect = display_rect(wall_img).move(i*CELL_SIZE, j*CELL_SIZE)
-    #             screen.blit(wall_img, wall_rect)
-    #             j += 1
-    #         elif map_df.iloc[j][i] == 'L' or map_df.iloc[j][i] == 'S':
-    #             # Cell(i, j, 'LANE')
-    #             lane_rect = display_rect(lane_img).move(i*CELL_SIZE, j*CELL_SIZE)
-    #             screen.blit(lane_img, lane_rect)
-    #             j += 1
-    #         elif map_df.iloc[j][i] == 'E':
-    #             # Cell(i, j, 'GUARD')
-    #             guard_rect = display_rect(guard_img).move(i*CELL_SIZE, j*CELL_SIZE)
-    #             screen.blit(guard_img, guard_rect)
-    #             j += 1  
-    
+        
 def display_items(map):
     '''
     Affichage des 3 items que doit récupérer le héros
@@ -85,19 +64,20 @@ def display_items(map):
     item3_img = display_img('item3.png')
     all_items_img = display_img('all_items.png')
     
-    item1_rect = display_rect(item1_img)
-    item2_rect = display_rect(item2_img)
-    item3_rect = display_rect(item3_img)
+    item1_rect = display_rect(item1_img, 0, 0)
+    item2_rect = display_rect(item2_img, 0, 0)
+    item3_rect = display_rect(item3_img, 0, 0)
     
     items_repr = [[item1_img, item1_rect], [item2_img, item2_rect], [item3_img, item3_rect]]
 
     i = 0
     while i < len(items_repr):
         for it in map.items_list:
-            items_repr[i][1] = items_repr[i][1].move(it[0]*CELL_SIZE, it[1]*CELL_SIZE)
+            items_repr[i][1] = items_repr[i][1].move(it.position[0], it.position[1])
             screen.blit(items_repr[i][0], items_repr[i][1])
+            pyg.display.update()
             i += 1
-            
+       
     return items_repr
 
 def display_hero(hero):
@@ -107,7 +87,7 @@ def display_hero(hero):
     hero_img = display_img('hero.png')
     hero_rect = display_rect(hero_img, hero.position[0], hero.position[1])
     screen.blit(hero_img, hero_rect)
-    pyg.display.flip()
+    pyg.display.update()
     
     return hero_img, hero_rect
 
@@ -119,26 +99,32 @@ def collect_item(hero, items):
         if hero.colliderect(it): # si le héro se place sur un item
             pass
             
-def pyg_events(hero, gmap):
+def pyg_events(hero, map):
     '''
     Gestion des évènements Pygame
     '''
-    df = gmap.create_dataframe()
+    df = map.create_dataframe()
+    hero_pos = hero.position
+    lane_img = display_img('lane.png')
+
     for event in pyg.event.get():
-        if event == pyg.QUIT:
-            pyg.quit()
+        if event.type == pyg.QUIT:
             sys.exit()
         if event.type == pyg.KEYDOWN:
             if event.key == pyg.K_ESCAPE:
                 raise SystemExit
             if event.key == pyg.K_LEFT:
                 hero.move_left(df)
+                screen.blit(lane_img, hero_pos)
             elif event.key == pyg.K_UP:           
                 hero.move_up(df)
+                screen.blit(lane_img, hero_pos)
             elif event.key == pyg.K_RIGHT:
                 hero.move_right(df)
+                screen.blit(lane_img, hero_pos)
             elif event.key == pyg.K_DOWN:
                 hero.move_down(df)
+                screen.blit(lane_img, hero_pos)
         
         hero.repr[1].move_ip(hero.position[0], hero.position[1])
         screen.blit(hero.repr[0], hero.repr[1])
