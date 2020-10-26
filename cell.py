@@ -3,27 +3,26 @@
 import os
 import sys
 
-from configs import CELL_SIZE
+from configs import CELL_SIZE, LANE_CELLS
 
 
 class Cell:
     '''
     Classe représentant la position de chacun des 225 éléments/cellules du jeu, fixes ou mobiles
-    '''
-    # sys.setrecursionlimit(10**6)
-    # wall_count = 0
-    # lane_count = 0
-    # item_count = 0
-    # guard_count = 0
-    # hero_count = 0
-    # total_count = 0
-    
+    '''    
     def __init__(self, x, y, type_of_cell):
         self.position = (x*CELL_SIZE, y*CELL_SIZE)
         self.type_of_cell = type_of_cell
         
     def __repr__(self):
-        return str(self.position)
+        return str((self.position, self.type_of_cell))
+    
+    def __eq__(self, other):
+        if self.position == other.position and other.type_of_cell in LANE_CELLS:
+            return True
+    
+    def __hash__(self):
+        return hash((self.position, self.type_of_cell))
     
     def get_position(self):
         return self.position
@@ -39,16 +38,7 @@ class Cell:
     
     def delete(self):
         pass
-    
-    def compare(self, other_cell):
-        position = other_cell.get_position()
-        toc = other_cell.get_type()
-        
-        if (self.position == position) and (self.type_of_cell == toc):
-            return True
-        else:
-            return False
-        
+       
     # properties
     # position = property(_get_position, _set_position)
     # type_of_cell = property(_get_type, _set_type)

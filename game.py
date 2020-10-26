@@ -19,10 +19,13 @@ class Game:
         '''
         labyrinthe = Map()
         labyrinthe.load_map_data('map.csv')
+        df = labyrinthe.create_dataframe()
         labyrinthe.items_random_position()
-        mcgyver = Hero(int(labyrinthe.start[0].position[0]/CELL_SIZE), int(labyrinthe.start[0].position[1]/CELL_SIZE), HERO_CELL)
+        start = list(labyrinthe.start)
+        mcgyver = Hero(int(start[0].position[0]/CELL_SIZE), int(start[0].position[1]/CELL_SIZE), HERO_CELL)
         interface.display_map(labyrinthe)
         interface.display_items(labyrinthe)
+        interface.display_text_zone1(labyrinthe)
         
         running = True        
         while running:
