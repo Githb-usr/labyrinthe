@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
@@ -8,7 +9,7 @@ from configs import CELL_SIZE, LANE_CELLS
 
 class Cell:
     '''
-    Classe représentant la position de chacun des 225 éléments/cellules du jeu, fixes ou mobiles
+    Class representing the position of each of the elements/cells of the set, fixed or mobile.
     '''    
     def __init__(self, x, y, type_of_cell):
         self.position = (x*CELL_SIZE, y*CELL_SIZE)
@@ -18,6 +19,10 @@ class Cell:
         return str((self.position, self.type_of_cell))
     
     def __eq__(self, other):
+        '''
+        We compare 2 cells to see if they are equal.
+        :param other: another Cell object
+        '''
         if self.position == other.position and other.type_of_cell in LANE_CELLS:
             return True
     
@@ -36,9 +41,6 @@ class Cell:
     def set_type(self, new_toc):
         self.type_of_cell = new_toc
     
-    def delete(self):
-        pass
-       
     # properties
     # position = property(_get_position, _set_position)
     # type_of_cell = property(_get_type, _set_type)

@@ -1,22 +1,24 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import pygame as pyg
 
-import interface
+from configs import HERO_CELL, CELL_SIZE
 from hero import Hero
 from map import Map
-from configs import SCREEN_SIZE, HERO_CELL, CELL_SIZE
+import interface
 
 
 class Game:
     '''
-    Classe créant le jeu
+    Game creation class
     '''
     
     def new_game(self):
         '''
-        Mise en place des éléments du jeu
+        Setting up the elements of the game
         '''
+        # We set up all the elements
         labyrinthe = Map()
         labyrinthe.load_map_data('map.csv')
         df = labyrinthe.create_dataframe()
@@ -27,6 +29,7 @@ class Game:
         interface.display_items(labyrinthe)
         interface.display_text_zone1(labyrinthe)
         
+        # We bring the hero to life
         running = True        
         while running:
             interface.display_hero(mcgyver)

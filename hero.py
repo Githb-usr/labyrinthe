@@ -1,14 +1,15 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from cell import Cell
+from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, LANE_CELLS
 from map import Map
 import interface
-from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, LANE_CELLS
 
 
 class Hero(Cell):
     '''
-    Classe gérant le héros du jeu
+    Class managing the hero of the game
     '''
         
     def __init__(self, x, y, type_of_cell):
@@ -18,24 +19,34 @@ class Hero(Cell):
 
     def move_left(self, map):
         '''
-        Changement de position du héros lors d'un déplacement vers la gauche
+        Changing the hero's position when moving to the left
+        :param map: the map object (the maze), to access its attributes
         '''
+        # The new position
         new_pos = (self.position[0] - CELL_SIZE, self.position[1])
+        # The virtual new cell with the new position, which must be a lane
         new_cell = Cell(int(new_pos[0] / CELL_SIZE), int(new_pos[1] / CELL_SIZE), LANE_CELL)
+        # List of all cells of the game
         cells = list(map.all_cells)
+        
+        # The hero is not allowed to leave the frame of the game.
         if self.position[0] > 0:
+            # The new position must be a lane
             if new_cell in cells:
                 for cell in cells:
+                    # If we find a lane cell with the same position as the virtual cell, we check that there is not an item to pick up.
                     if cell.position == new_cell.position:
                         interface.collect_item(self, map.items_list)
+                # We update the position of the hero
                 self.position = new_pos
                 return self.position
             else:
+                # If it's not a lane, the hero doesn't move.
                 return self.position
                         
     def move_up(self, map):
         '''
-        Changement de position du héros lors d'un déplacement vers le haut
+        Changing the hero's position when moving upwards
         '''
         new_pos = (self.position[0], self.position[1] - CELL_SIZE)
         new_cell = Cell(int(new_pos[0] / CELL_SIZE), int(new_pos[1] / CELL_SIZE), LANE_CELL)
@@ -52,7 +63,7 @@ class Hero(Cell):
 
     def move_right(self, map):
         '''
-        Changement de position du héros lors d'un déplacement vers la droite
+        Changing the position of the hero when moving to the right
         '''
         new_pos = (self.position[0] + CELL_SIZE, self.position[1])
         new_cell = Cell(int(new_pos[0] / CELL_SIZE), int(new_pos[1] / CELL_SIZE), LANE_CELL)
@@ -69,7 +80,7 @@ class Hero(Cell):
                 
     def move_down(self, map):
         '''
-        Changement de position du héros lors d'un déplacement vers le bas
+        Changing the hero's position when moving downwards
         '''
         new_pos = (self.position[0], self.position[1] + CELL_SIZE)
         new_cell = Cell(int(new_pos[0] / CELL_SIZE), int(new_pos[1] / CELL_SIZE), LANE_CELL)

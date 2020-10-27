@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
@@ -5,10 +6,10 @@ import sys
 
 import pygame as pyg
 
-from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, BACKGROUND, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_TXTPOS1, ITEM_TXTPOS2, ITEM_TXTPOS3, ITEM_TXTPOS, ALL_ITEMS_POS
-from map import Map
-from hero import Hero
 from cell import Cell
+from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, BACKGROUND, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_TXTPOS1, ITEM_TXTPOS2, ITEM_TXTPOS3, ITEM_TXTPOS, ALL_ITEMS_POS
+from hero import Hero
+from map import Map
 
 pyg.display.init()
 screen = pyg.display.set_mode(SCREEN_SIZE)
@@ -19,17 +20,27 @@ pyg.display.set_caption("Aidez MacGyver à s'échapper du labyrinthe !")
 
 def display_img(img):
     '''
-    Affichage de chaque image du jeu
+    Display of each image of the game
+    :param img: file name of the image to be imported
+    :type img: JPG, PNG
     '''
-    directory = os.path.dirname(__file__) # On prend le bon chemin
-    path_to_file = os.path.join(directory, "img", img) # On va dans le dossier "maps" et on récupère le fichier image.
+    # We're going the right way
+    directory = os.path.dirname(__file__)
+    # We go to the "maps" folder and retrieve the image file.
+    path_to_file = os.path.join(directory, "img", img)
+    # We import the image, while preserving any transparency
     cell_img = pyg.image.load(path_to_file).convert_alpha()
     
     return cell_img
 
 def display_rect(cell_img, x, y):
     '''
-    Création d'un objet rect
+    Creating a rect object
+    :param cell_img: imported image
+    :param x: x-position of the rect
+    :param y: y-position of the rect
+    :type x: int
+    :type y: int
     '''  
     cell_img_rect = cell_img.get_rect(left=x, top=y)
     
@@ -37,29 +48,36 @@ def display_rect(cell_img, x, y):
 
 def display_map(map):
     '''
-    Affichage du fond du jeu
+    Game background display
+    :param map: the map object (the maze), to access its attributes
     ''' 
+    # We import the images
     wall_img = display_img('wall.png')
-    lane_img = display_img('lane.png')    
+    lane_img = display_img('lane.png')
     guard_img = display_img('guard.png')
     
+    # The map is displayed from the position and type of each cell.
     for cell in map.all_cells:
         if cell.type_of_cell == WALL_CELL:
             wall_rect = display_rect(wall_img, cell.position[0], cell.position[1])
             screen.blit(wall_img, wall_rect)
+        # The departure and arrival cells are also lanes.
         elif cell.type_of_cell == LANE_CELL or cell.type_of_cell == START_CELL or cell.type_of_cell == EXIT_CELL:
             lane_rect = display_rect(lane_img, cell.position[0], cell.position[1])
-            screen.blit(lane_img, lane_rect)        
+            screen.blit(lane_img, lane_rect)
+            # We display the guard
             if cell.type_of_cell == EXIT_CELL:
                 guard_rect = display_rect(guard_img, cell.position[0], cell.position[1])
-                screen.blit(guard_img, guard_rect)            
+                screen.blit(guard_img, guard_rect)
             
     pyg.display.flip()
         
 def display_items(map):
     '''
-    Affichage des 3 items que doit récupérer le héros
+    Display of the items that the hero must retrieve
+    :param map: the map object (the maze), to access its attributes
     '''
+    # The representation of the items (image and rect) is created.
     items_repr = []
     for it in map.items_list:
         item_img = display_img(it.image)
@@ -68,6 +86,7 @@ def display_items(map):
         
     i = 0
     while i < len(items_repr):
+        # Items are displayed according to the position of the cells.
         for it in map.items_list:
             items_repr[i][1] = items_repr[i][1].move(it.position[0], it.position[1])
             screen.blit(items_repr[i][0], items_repr[i][1])
@@ -78,7 +97,8 @@ def display_items(map):
 
 def display_hero(hero):
     '''
-    Affichage du héros
+    Hero display
+    :param hero: hero object, to access its attributes
     '''
     hero_img = display_img('hero.png')
     hero_rect = display_rect(hero_img, hero.position[0], hero.position[1])
@@ -89,10 +109,14 @@ def display_hero(hero):
 
 def collect_item(hero, items):
     '''
-    Rammassage des items par le héros
+    Pick-up of items by hero
+    :param hero: hero object, to access its attributes
+    :param items: corresponds to the map.items_list attribute 
     '''
+    # List of item positions in zone 1
     items_textpos = [ITEM_TXTPOS1, ITEM_TXTPOS2, ITEM_TXTPOS3]
     for it in items:
+        # If the hero is on an item, the item changes position according to its image (it goes from the map to zone 1).
         if (hero.position == it.position):
             if it.image == 'item1.png':
                 it.position = items_textpos[0]
@@ -103,19 +127,26 @@ def collect_item(hero, items):
             image = display_img(it.image)
             pos = display_rect(image, it.position[0], it.position[1])
             screen.blit(image, pos)
+    # We check if we have all the items, in order to display zone 2 if necessary. 
     display_text_zone2(items)
     
     pyg.display.update()
 
-def display_text_zone1(map):
+def display_text_zone1():
+    '''
+    Display of text field 1 (list of collected items)
+    '''
     pyg.font.init()
+    # Setting fonts
     font = pyg.font.SysFont('calibri', 17, bold=True)
     font_small = pyg.font.SysFont('calibri', 15, bold=True)
     font_big = pyg.font.SysFont('cambria', 18, bold=True)
+    # Display of permanent texts
     text_surface = font.render('Récupérez tous les objets !', False, (0, 0, 0))
     screen.blit(text_surface, (25, 770))
     text_surface = font.render('Ils apparaitront ci-dessous :', False, (0, 0, 0))
     screen.blit(text_surface, (25, 790))
+    # Display of items, if picked up
     text_surface = font_small.render('Tube', False, (0, 0, 0))
     screen.blit(text_surface, (32, 860))
     text_surface = font_small.render('Aiguille', False, (0, 0, 0))
@@ -125,16 +156,23 @@ def display_text_zone1(map):
     pyg.display.update()
 
 def display_text_zone2(items):
+    '''
+    Display of text field 2 (all items have been picked up)
+    :param items: corresponds to the map.items_list attribute
+    '''
     pyg.font.init()
+    # Setting fonts
     font = pyg.font.SysFont('calibri', 17, bold=True)
     font_small = pyg.font.SysFont('calibri', 15, bold=True)
     font_big = pyg.font.SysFont('cambria', 18, bold=True)
+    # The positions of all the items are retrieved
     items_pos = []
     for it in items:
         items_pos.append(it.position)
     
     items_pos.sort()
     ITEM_TXTPOS.sort()
+    # If all the items are in zone 1, then zone 2 is displayed.
     if items_pos == ITEM_TXTPOS:
         text_surface = font.render('Bravo, vous avez réconstitué la seringue !', False, (0, 0, 0))
         screen.blit(text_surface, (290, 770))
@@ -148,20 +186,26 @@ def display_text_zone2(items):
          
 def pyg_events(hero, map):
     '''
-    Gestion des évènements Pygame
+    Event management Pygame
+    :param hero: hero object, to access its attributes
+    :param map: map object, to pass it to a method
     '''
     hero_pos = hero.position
     lane_img = display_img('lane.png')
     keys = pyg.key.get_pressed()
     
     for event in pyg.event.get():
+        # The game is closed with the cross in the window.
         if event.type == pyg.QUIT:
             pyg.quit()
             sys.exit()
+        # The game is closed with the 'Escape' button on the keyboard.
         if keys[pyg.K_ESCAPE]:
             raise SystemExit
         if keys[pyg.K_LEFT]:
+            # We change the position of the hero
             hero.move_left(map)
+            # The image of the hero in his former position is erased.
             screen.blit(lane_img, hero_pos)
         elif keys[pyg.K_UP]:
             hero.move_up(map)
@@ -174,4 +218,5 @@ def pyg_events(hero, map):
             screen.blit(lane_img, hero_pos)
         
         hero.repr[1].move_ip(hero.position[0], hero.position[1])
+        # The image of the hero is displayed in his new position.
         screen.blit(hero.repr[0], hero.repr[1])
