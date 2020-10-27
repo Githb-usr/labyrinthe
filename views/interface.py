@@ -12,6 +12,11 @@ import models.hero
 import models.map
 
 pyg.display.init()
+pyg.font.init()
+# Setting fonts
+font = pyg.font.SysFont('calibri', 17, bold=True)
+font_small = pyg.font.SysFont('calibri', 15, bold=True)
+font_big = pyg.font.SysFont('calibri', 32, bold=True)
 screen = pyg.display.set_mode(SCREEN_SIZE)
 screen.fill(BACKGROUND)
 clock = pyg.time.Clock()
@@ -131,40 +136,12 @@ def collect_item(hero, items):
     display_text_zone2(items)
     
     pyg.display.update()
-
-def display_text_zone1():
-    '''
-    Display of text field 1 (list of collected items)
-    '''
-    pyg.font.init()
-    # Setting fonts
-    font = pyg.font.SysFont('calibri', 17, bold=True)
-    font_small = pyg.font.SysFont('calibri', 15, bold=True)
-    font_big = pyg.font.SysFont('cambria', 18, bold=True)
-    # Display of permanent texts
-    text_surface = font.render('Récupérez tous les objets !', False, (0, 0, 0))
-    screen.blit(text_surface, (25, 770))
-    text_surface = font.render('Ils apparaitront ci-dessous :', False, (0, 0, 0))
-    screen.blit(text_surface, (25, 790))
-    # Display of items, if picked up
-    text_surface = font_small.render('Tube', False, (0, 0, 0))
-    screen.blit(text_surface, (32, 860))
-    text_surface = font_small.render('Aiguille', False, (0, 0, 0))
-    screen.blit(text_surface, (107, 860)) 
-    text_surface = font_small.render('Ether', False, (0, 0, 0))
-    screen.blit(text_surface, (182, 860))
-    pyg.display.update()
-
-def display_text_zone2(items):
+    
+def check_all_items(items):
     '''
     Display of text field 2 (all items have been picked up)
     :param items: corresponds to the map.items_list attribute
-    '''
-    pyg.font.init()
-    # Setting fonts
-    font = pyg.font.SysFont('calibri', 17, bold=True)
-    font_small = pyg.font.SysFont('calibri', 15, bold=True)
-    font_big = pyg.font.SysFont('cambria', 18, bold=True)
+    '''    
     # The positions of all the items are retrieved
     items_pos = []
     for it in items:
@@ -172,18 +149,60 @@ def display_text_zone2(items):
     
     items_pos.sort()
     ITEM_TXTPOS.sort()
-    # If all the items are in zone 1, then zone 2 is displayed.
     if items_pos == ITEM_TXTPOS:
-        text_surface = font.render('Bravo, vous avez réconstitué la seringue !', False, (0, 0, 0))
-        screen.blit(text_surface, (290, 770))
-        text_surface = font.render('Vous pouvez vous présenter devant le gardien.', False, (0, 0, 0))
-        screen.blit(text_surface, (290, 790))
+        return True
+    else:
+        return False
+    
+def display_text_zone1():
+    '''
+    Display of text field 1 (list of collected items)
+    '''
+    # Display of permanent texts
+    text = font.render('Récupérez tous les objets !', False, (0, 0, 0))
+    screen.blit(text, (25, 770))
+    text = font.render('Ils apparaitront ci-dessous :', False, (0, 0, 0))
+    screen.blit(text, (25, 790))
+    # Display of items, if picked up
+    text = font_small.render('Tube', False, (0, 0, 0))
+    screen.blit(text, (32, 860))
+    text = font_small.render('Aiguille', False, (0, 0, 0))
+    screen.blit(text, (107, 860)) 
+    text = font_small.render('Ether', False, (0, 0, 0))
+    screen.blit(text, (182, 860))
+    pyg.display.update()
+
+def display_text_zone2(items):
+    '''
+    Display of text field 2 (all items have been picked up)
+    :param items: corresponds to the map.items_list attribute
+    '''
+
+    # If all the items are in zone 1, then zone 2 is displayed.
+    if check_all_items(items) == True:
+        text = font.render("Bravo, vous avez réconstitué la seringue !", False, (0, 0, 0))
+        screen.blit(text, (290, 770))
+        text = font.render("Vous pouvez vous présenter devant le garde et l'endormir.", False, (0, 0, 0))
+        screen.blit(text, (290, 790))
         syringe_img = display_img('all_items.png')
         syringe_rect = display_rect(syringe_img, ALL_ITEMS_POS[0], ALL_ITEMS_POS[1])
         screen.blit(syringe_img, syringe_rect)
     
     pyg.display.update()
-         
+    
+def display_text_zone3(items):
+    '''
+    Display of text field 3 (Game won or lost)
+    '''
+    if check_all_items(items) == True:
+        text = font_big.render('Bravo, vous avez gagné ! :o)', False, (22, 184, 78))
+        text_rect = text.get_rect(center=(SCREEN_SIZE[0]/2, 925))
+        screen.blit(text, text_rect)
+    else:
+        text = font_big.render('Oh non, vous avez perdu ! :(', False, (255, 0, 0))
+        text_rect = text.get_rect(center=(SCREEN_SIZE[0]/2, 925))
+        screen.blit(text, text_rect)        
+            
 def pyg_events(hero, map):
     '''
     Event management Pygame

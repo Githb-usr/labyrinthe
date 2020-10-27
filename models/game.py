@@ -3,7 +3,7 @@
 
 import pygame as pyg
 
-from config.configs import HERO_CELL, CELL_SIZE
+from config.configs import CELL_SIZE, HERO_CELL
 from models.hero import Hero
 from models.map import Map
 import views.interface as interface
@@ -30,7 +30,7 @@ class Game:
         interface.display_text_zone1()
         
         # We bring the hero to life
-        running = True        
+        running = True
         while running:
             interface.display_hero(mcgyver)
             interface.pyg_events(mcgyver, labyrinthe)

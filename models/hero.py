@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from config.configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, LANE_CELLS
+from config.configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, LANE_CELLS, EXIT_CELL
 from models.cell import Cell
 from models.map import Map
 import views.interface as interface
@@ -37,6 +37,9 @@ class Hero(Cell):
                     # If we find a lane cell with the same position as the virtual cell, we check that there is not an item to pick up.
                     if cell.position == new_cell.position:
                         interface.collect_item(self, map.items_list)
+                    # The hero meets the guard
+                    if cell.position == new_cell.position and cell.type_of_cell == EXIT_CELL:
+                        interface.display_text_zone3(map.items_list)
                 # We update the position of the hero
                 self.position = new_pos
                 return self.position
@@ -56,6 +59,8 @@ class Hero(Cell):
                 for cell in cells:
                     if cell.position == new_cell.position:
                         interface.collect_item(self, map.items_list)
+                    if cell.position == new_cell.position and cell.type_of_cell == EXIT_CELL:
+                        interface.display_text_zone3(map.items_list)
                 self.position = new_pos
                 return self.position
             else:
@@ -73,6 +78,8 @@ class Hero(Cell):
                 for cell in cells:
                     if cell.position == new_cell.position:
                         interface.collect_item(self, map.items_list)
+                    if cell.position == new_cell.position and cell.type_of_cell == EXIT_CELL:
+                        interface.display_text_zone3(map.items_list)
                 self.position = new_pos
                 return self.position
             else:
@@ -90,6 +97,8 @@ class Hero(Cell):
                 for cell in cells:
                     if cell.position == new_cell.position:
                         interface.collect_item(self, map.items_list)
+                    if cell.position == new_cell.position and cell.type_of_cell == EXIT_CELL:
+                        interface.display_text_zone3(map.items_list)
                 self.position = new_pos
                 return self.position
             else:
