@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from cell import Cell
-from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, LANE_CELLS
-from map import Map
-import interface
+from config.configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, LANE_CELLS
+from models.cell import Cell
+from models.map import Map
+import views.interface as interface
 
 
 class Hero(Cell):

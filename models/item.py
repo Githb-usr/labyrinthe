@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from cell import Cell
-from configs import ITEM_CELL
+from models.cell import Cell
+from config.configs import ITEM_CELL
 
 
 class Item(Cell):

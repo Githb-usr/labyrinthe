@@ -6,10 +6,10 @@ import sys
 
 import pygame as pyg
 
-from cell import Cell
-from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, BACKGROUND, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_TXTPOS1, ITEM_TXTPOS2, ITEM_TXTPOS3, ITEM_TXTPOS, ALL_ITEMS_POS
-from hero import Hero
-from map import Map
+from config.configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, BACKGROUND, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_TXTPOS1, ITEM_TXTPOS2, ITEM_TXTPOS3, ITEM_TXTPOS, ALL_ITEMS_POS
+import models.cell
+import models.hero
+import models.map
 
 pyg.display.init()
 screen = pyg.display.set_mode(SCREEN_SIZE)
@@ -25,7 +25,7 @@ def display_img(img):
     :type img: JPG, PNG
     '''
     # We're going the right way
-    directory = os.path.dirname(__file__)
+    directory = os.path.dirname(os.path.dirname(__file__))
     # We go to the "maps" folder and retrieve the image file.
     path_to_file = os.path.join(directory, "img", img)
     # We import the image, while preserving any transparency

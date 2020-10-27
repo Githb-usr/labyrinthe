@@ -4,7 +4,7 @@
 import os
 import sys
 
-from configs import CELL_SIZE, LANE_CELLS
+from config.configs import CELL_SIZE, LANE_CELLS
 
 
 class Cell:

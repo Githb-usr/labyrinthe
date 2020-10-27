@@ -8,9 +8,9 @@ import random
 import numpy as np
 import pandas as pd
 
-from cell import Cell
-from configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_CELL
-from item import Item
+from config.configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_CELL
+from models.cell import Cell
+from models.item import Item
 
 
 class Map:
@@ -33,9 +33,9 @@ class Map:
         :param map_file: the CSV file containing the structure of the maze
         """
         # We're going the right way
-        directory = os.path.dirname(__file__)
+        directory = os.path.dirname(os.path.dirname(__file__))
         # We go to the "map" folder and retrieve the file.
-        path_to_file = os.path.join(directory, "maps", map_file)
+        path_to_file = os.path.join(directory, ".\maps", map_file)
        
         with open(path_to_file, newline='') as labycsv:
             reader = csv.reader(labycsv)
