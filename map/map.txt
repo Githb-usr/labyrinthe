@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-#############E#
-#ccccccccY#ccc#
-###c#c#####c###
-#ccc#c#ccc#c#c#
-#c###c#c###c#c#
-#c#ccccc#ccccc#
-#c#c#######c#c#
-#c#ccccccc#Z#c#
-#c###c###c###c#
-#ccc#c#X#ccccc#
-###c###c#######
-#c#ccc#c#ccccc#
-#c###c#c#c###c#
-#ccccccccccc#cS 
-###############
-=======
 WWWWWWWWWWWWWEW
 WLLLLLLLLLWLLLW
 WWWLWLWWWWWLWWW
@@ -30,4 +13,3 @@ WLWLLLWLWLLLLLW
 WLWWWLWLWLWWWLW
 WLLLLLLLLLLLWLS 
 WWWWWWWWWWWWWWW
->>>>>>> develop
