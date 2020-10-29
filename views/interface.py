@@ -193,6 +193,7 @@ def display_text_zone2(items):
 def display_text_zone3(items):
     '''
     Display of text field 3 (Game won or lost)
+    :param items: corresponds to the map.items_list attribute
     '''
     if check_all_items(items) == True:
         text = font_big.render('Bravo, vous avez gagné ! :o)', False, (22, 184, 78))
