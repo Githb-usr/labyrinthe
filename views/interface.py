@@ -8,6 +8,7 @@ import pygame as pyg
 
 from config.configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, BACKGROUND, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_TXTPOS1, ITEM_TXTPOS2, ITEM_TXTPOS3, ITEM_TXTPOS, ALL_ITEMS_POS
 import models.cell
+import models.game
 import models.hero
 import models.map
 
@@ -22,6 +23,7 @@ screen.fill(BACKGROUND)
 clock = pyg.time.Clock()
 FPS = 60  # Frames per second.
 pyg.display.set_caption("Aidez MacGyver à s'échapper du labyrinthe !")
+pyg.key.set_repeat(10, 100)
 
 def display_img(img):
     '''
@@ -55,7 +57,7 @@ def display_map(map):
     '''
     Game background display
     :param map: the map object (the maze), to access its attributes
-    ''' 
+    '''
     # We import the images
     wall_img = display_img('wall.png')
     lane_img = display_img('lane.png')
@@ -105,7 +107,7 @@ def display_hero(hero):
     Hero display
     :param hero: hero object, to access its attributes
     '''
-    hero_img = display_img('hero.png')
+    hero_img = display_img(hero.image)
     hero_rect = display_rect(hero_img, hero.position[0], hero.position[1])
     screen.blit(hero_img, hero_rect)
     pyg.display.update()
@@ -149,27 +151,24 @@ def check_all_items(items):
     
     items_pos.sort()
     ITEM_TXTPOS.sort()
-    if items_pos == ITEM_TXTPOS:
-        return True
-    else:
-        return False
+    return items_pos == ITEM_TXTPOS
     
 def display_text_zone1():
     '''
     Display of text field 1 (list of collected items)
     '''
     # Display of permanent texts
-    text = font.render('Récupérez tous les objets !', False, (0, 0, 0))
-    screen.blit(text, (25, 770))
-    text = font.render('Ils apparaitront ci-dessous :', False, (0, 0, 0))
-    screen.blit(text, (25, 790))
+    text1 = font.render('Récupérez tous les objets !', False, (0, 0, 0))
+    screen.blit(text1, (25, 770))
+    text1 = font.render('Ils apparaitront ci-dessous :', False, (0, 0, 0))
+    screen.blit(text1, (25, 790))
     # Display of items, if picked up
-    text = font_small.render('Tube', False, (0, 0, 0))
-    screen.blit(text, (32, 860))
-    text = font_small.render('Aiguille', False, (0, 0, 0))
-    screen.blit(text, (107, 860)) 
-    text = font_small.render('Ether', False, (0, 0, 0))
-    screen.blit(text, (182, 860))
+    text1 = font_small.render('Tube', False, (0, 0, 0))
+    screen.blit(text1, (32, 860))
+    text1 = font_small.render('Aiguille', False, (0, 0, 0))
+    screen.blit(text1, (107, 860)) 
+    text1 = font_small.render('Ether', False, (0, 0, 0))
+    screen.blit(text1, (182, 860))
     pyg.display.update()
 
 def display_text_zone2(items):
@@ -177,13 +176,12 @@ def display_text_zone2(items):
     Display of text field 2 (all items have been picked up)
     :param items: corresponds to the map.items_list attribute
     '''
-
     # If all the items are in zone 1, then zone 2 is displayed.
     if check_all_items(items) == True:
-        text = font.render("Bravo, vous avez réconstitué la seringue !", False, (0, 0, 0))
-        screen.blit(text, (290, 770))
-        text = font.render("Vous pouvez vous présenter devant le garde et l'endormir.", False, (0, 0, 0))
-        screen.blit(text, (290, 790))
+        text2 = font.render("Bravo, vous avez réconstitué la seringue !", False, (0, 0, 0))
+        screen.blit(text2, (290, 770))
+        text2 = font.render("Vous pouvez vous présenter devant le garde et l'endormir.", False, (0, 0, 0))
+        screen.blit(text2, (290, 790))
         syringe_img = display_img('all_items.png')
         syringe_rect = display_rect(syringe_img, ALL_ITEMS_POS[0], ALL_ITEMS_POS[1])
         screen.blit(syringe_img, syringe_rect)
@@ -196,13 +194,32 @@ def display_text_zone3(items):
     :param items: corresponds to the map.items_list attribute
     '''
     if check_all_items(items) == True:
-        text = font_big.render('Bravo, vous avez gagné ! :o)', False, (22, 184, 78))
-        text_rect = text.get_rect(center=(SCREEN_SIZE[0]/2, 925))
-        screen.blit(text, text_rect)
+        text3 = font_big.render('Bravo, vous avez gagné ! :o)', False, (22, 184, 78))
+        text3_rect = text3.get_rect(center=(SCREEN_SIZE[0]/2, 925))
+        screen.blit(text3, text3_rect)
+        text3 = font.render('Voulez-vous rejouer? o/n', False, (22, 184, 78))
+        text3_rect = text3.get_rect(center=(SCREEN_SIZE[0]/2, 970))
+        screen.blit(text3, text3_rect)
     else:
-        text = font_big.render('Oh non, vous avez perdu ! :(', False, (255, 0, 0))
-        text_rect = text.get_rect(center=(SCREEN_SIZE[0]/2, 925))
-        screen.blit(text, text_rect)        
+        text3 = font_big.render('Oh non, vous avez perdu ! :(', False, (255, 0, 0))
+        text3_rect = text3.get_rect(center=(SCREEN_SIZE[0]/2, 925))
+        screen.blit(text3, text3_rect)
+        text3 = font.render('Voulez-vous rejouer? o/n', False, (22, 184, 78))
+        text3_rect = text3.get_rect(center=(SCREEN_SIZE[0]/2, 970))
+        screen.blit(text3, text3_rect)
+
+def clear_map():
+    background = pyg.Surface(screen.get_size())
+    background = background.convert()
+    background.fill(BACKGROUND)
+    
+    for it in ITEM_TXTPOS:
+        screen.blit(background, it)
+    
+    screen.blit(background, (290, 770))
+    screen.blit(background, (290, 790))
+    screen.blit(background, (SCREEN_SIZE[0]/2, 925))
+    screen.blit(background, (SCREEN_SIZE[0]/2, 970))
             
 def pyg_events(hero, map):
     '''
@@ -220,8 +237,12 @@ def pyg_events(hero, map):
             pyg.quit()
             sys.exit()
         # The game is closed with the 'Escape' button on the keyboard.
-        if keys[pyg.K_ESCAPE]:
+        if keys[pyg.K_ESCAPE] or keys[pyg.K_n]:
             raise SystemExit
+        if keys[pyg.K_o]:
+            clear_map()
+            new_game = models.game.Game()
+            new_game.start()
         if keys[pyg.K_LEFT]:
             # We change the position of the hero
             hero.move_left(map)

@@ -13,8 +13,7 @@ class Game:
     '''
     Game creation class
     '''
-    
-    def new_game(self):
+    def start(self):
         '''
         Setting up the elements of the game
         '''
@@ -24,7 +23,7 @@ class Game:
         df = labyrinthe.create_dataframe()
         labyrinthe.items_random_position()
         start = list(labyrinthe.start)
-        mcgyver = Hero(int(start[0].position[0]/CELL_SIZE), int(start[0].position[1]/CELL_SIZE), HERO_CELL)
+        mcgyver = Hero(int(start[0].position[0]/CELL_SIZE), int(start[0].position[1]/CELL_SIZE), HERO_CELL, 'hero.png')
         interface.display_map(labyrinthe)
         interface.display_items(labyrinthe)
         interface.display_text_zone1()

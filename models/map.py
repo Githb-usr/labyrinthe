@@ -10,7 +10,6 @@ import pandas as pd
 
 from config.configs import CELL_SIZE, SCREEN_SIZE, MAP_SIZE, LANE_CELL, WALL_CELL, START_CELL, EXIT_CELL, ITEM_CELL
 from models.cell import Cell
-from models.item import Item
 
 
 class Map:
@@ -58,13 +57,13 @@ class Map:
             x = 0
             while x < len(df):
                 if df[x][y] == WALL_CELL:
-                    self.wall.add(Cell(x, y, WALL_CELL))
+                    self.wall.add(Cell(x, y, WALL_CELL, 'wall.png'))
                 elif df[x][y] == LANE_CELL:
-                    self.lane.add(Cell(x, y, LANE_CELL))
+                    self.lane.add(Cell(x, y, LANE_CELL, 'lane.png'))
                 elif df[x][y] == START_CELL:
-                    self.start.add(Cell(x, y, START_CELL))
+                    self.start.add(Cell(x, y, START_CELL, 'lane.png'))
                 elif df[x][y] == EXIT_CELL:
-                    self.exit.add(Cell(x, y, EXIT_CELL))
+                    self.exit.add(Cell(x, y, EXIT_CELL, 'lane.png'))
                 else:
                     pass
                 x += 1
@@ -85,7 +84,7 @@ class Map:
             # Each cell is assigned an image from the tems_img list.
             select_img = random.choice(items_img)
             # We create item objects and place them in the items_list attribute
-            self.items_list.add(Item(int(it.position[0] / CELL_SIZE), int(it.position[1] / CELL_SIZE), select_img))
+            self.items_list.add(Cell(int(it.position[0] / CELL_SIZE), int(it.position[1] / CELL_SIZE), ITEM_CELL, select_img))
             # The assigned image is removed from the list to prevent it from being reassigned.
             items_img.remove(select_img)
         

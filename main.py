@@ -6,4 +6,4 @@ from models.game import Game
 # Let's start the game
 if __name__ == "__main__":
     game = Game()
-    game.new_game()
+    game.start()
